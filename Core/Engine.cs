@@ -63,7 +63,7 @@ namespace Cyreto_.Core
             if(letRename)
             {
                 //WANT TO CHANGE NEXT GETFILES METHODS WITH SOMETHING SMARTER/MULTHITHREADING
-                Its all about working with cyrillic symbols.Check /catch/ rename it into the file names and folders.
+                
                 //get the files
                 string[] adultsCollections = Directory.GetFiles(gc.adults, $"*{extensionToSearch}", SearchOption.AllDirectories); //adults
                 string[] youngCollections = Directory.GetFiles(gc.youngAthletes, $"*{extensionToSearch}", SearchOption.AllDirectories); //ya
