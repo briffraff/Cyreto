@@ -23,118 +23,132 @@ namespace Cyreto_.Core
             Console.WriteLine($"\nDo you want to FIX cyr symbols? [y/n]");
             var letRename = let.YesNo();
 
-            Console.Write("\nFile extension: "); // would be good to think about to work with more than one extension
-            var extension = let.GetExtension();
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write("\nex: File extension(s): jpg .psd .obj obj");
+            Console.ForegroundColor = ConsoleColor.White;
 
-            //fix user input to proper one; -> ".jpg"
-            var extensionToSearch = (extension[0].ToString() == ".") ? extension : ($".{extension}");
+            Console.Write("\nFile extension(s): "); // would be good to think about to work with more than one extension
+            var extensions = let.GetExtension();
 
+            var extensionToSearch = "";
             var counterTotal = 0;
             var countFiles = 0;
             var countCurrent = 0;
+            var loops = 0;
 
-            //keys - cyrillics | value - latin
-            var dict = new Dictionary<string, string>
+            foreach (var extension in extensions)
             {
-                {"А", "A"},
-                {"О", "O"},
-                {"Е", "E"},
-                {"И", "I"},
-                {"Н", "N"},
-                {"М", "M"},
-                {"В", "W"},
-                {"Б", "B"},
-                {"Г", "G"},
-                {"Д", "D"},
-                {"Ц", "C"},
-                {"Т", "T"},
-                {"С", "S"},
-                {"П", "P"},
-                {"У", "U"},
-                {"Ъ", "Y"},
-                {"К", "K"},
-                {"Р", "R"},
-                {"Я", "Q"},
-                {"Ф", "F"},
-                {"ѝ", "X"},
-                {"Х", "H"},
-            };
+                loops++;
+                Console.WriteLine($"[ {extension} ] -->");
 
-            if(letRename)
-            {
-                //WANT TO CHANGE NEXT GETFILES METHODS WITH SOMETHING SMARTER/MULTHITHREADING
-                
-                //get the files
-                string[] adultsCollections = Directory.GetFiles(gc.adults, $"*{extensionToSearch}", SearchOption.AllDirectories); //adults
-                string[] youngCollections = Directory.GetFiles(gc.youngAthletes, $"*{extensionToSearch}", SearchOption.AllDirectories); //ya
-                string[] plusCollections = Directory.GetFiles(gc.plusSize, $"*{extensionToSearch}", SearchOption.AllDirectories); //ps
-                string[] shoesCollections = Directory.GetFiles(gc.shoes, $"*{extensionToSearch}", SearchOption.AllDirectories); //ps
+                //fix user input to proper one; -> ".jpg"
+                extensionToSearch = (extension[0].ToString() == ".") ? extension : ($".{extension}");
 
-                foreach (var path in adultsCollections)
+                //keys - cyrillics | value - latin
+                var dict = new Dictionary<string, string>
                 {
-                    allFiles.Add(path);
-                }
+                    {"А", "A"},
+                    {"О", "O"},
+                    {"Е", "E"},
+                    {"И", "I"},
+                    {"Н", "N"},
+                    {"М", "M"},
+                    {"В", "W"},
+                    {"Б", "B"},
+                    {"Г", "G"},
+                    {"Д", "D"},
+                    {"Ц", "C"},
+                    {"Т", "T"},
+                    {"С", "S"},
+                    {"П", "P"},
+                    {"У", "U"},
+                    {"Ъ", "Y"},
+                    {"К", "K"},
+                    {"Р", "R"},
+                    {"Я", "Q"},
+                    {"Ф", "F"},
+                    {"ѝ", "X"},
+                    {"Х", "H"},
+                };
 
-                foreach (var path in youngCollections)
+                if (letRename)
                 {
-                    allFiles.Add(path);
-                }
+                    //WANT TO CHANGE NEXT GETFILES METHODS WITH SOMETHING SMARTER/MULTHITHREADING
 
-                foreach (var path in plusCollections)
-                {
-                    allFiles.Add(path);
-                }
+                    //get the files
+                    string[] adultsCollections = Directory.GetFiles(gc.adults, $"*{extensionToSearch}", SearchOption.AllDirectories); //adults
+                    string[] youngCollections = Directory.GetFiles(gc.youngAthletes, $"*{extensionToSearch}", SearchOption.AllDirectories); //ya
+                    string[] plusCollections = Directory.GetFiles(gc.plusSize, $"*{extensionToSearch}", SearchOption.AllDirectories); //ps
+                    string[] shoesCollections = Directory.GetFiles(gc.shoes, $"*{extensionToSearch}", SearchOption.AllDirectories); //ps
 
-                foreach (var path in shoesCollections)
-                {
-                    allFiles.Add(path);
-                }
-
-                //
-                foreach (var path in allFiles)
-                {
-                    //get the file name from path
-                    var fileName = Path.GetFileNameWithoutExtension(path);
-
-                    var tempFileName = fileName;
-
-                    //check each symbol
-                    foreach (var symbol in fileName)
+                    foreach (var path in adultsCollections)
                     {
-                        var currentSymbol = symbol.ToString();
-                        var check = dict.ContainsKey(currentSymbol);
-
-                        //if cyrillic exist - dictionary keys are cyrillics
-                        if (check)
-                        {
-                            //value
-                            var symbolToAdd = dict[currentSymbol];
-                            tempFileName = tempFileName.Replace(currentSymbol, symbolToAdd); // replace(swap) symbols
-
-                            countCurrent++;
-                            counterTotal++;
-
-                            printFoundCyr(fileName, currentSymbol, symbolToAdd);
-                        }
-
-                        //set + 1 file
-                        if (countCurrent == 1 && check == true)
-                        {
-                            countFiles++;
-                        }
+                        allFiles.Add(path);
                     }
 
-                    //set file name which should be renamed in the hashset
-                    if (countCurrent != 0)
+                    foreach (var path in youngCollections)
                     {
-                        var fileToRename = Path.Combine(Path.GetDirectoryName(path), tempFileName + Path.GetExtension(path));
-                        files.Add(fileToRename);
+                        allFiles.Add(path);
                     }
 
-                    countCurrent = 0;
+                    foreach (var path in plusCollections)
+                    {
+                        allFiles.Add(path);
+                    }
 
-                    ////Rename(path, tempFileName); //rename
+                    foreach (var path in shoesCollections)
+                    {
+                        allFiles.Add(path);
+                    }
+
+                    //
+                    foreach (var path in allFiles)
+                    {
+                        //get the file name from path
+                        var fileName = Path.GetFileNameWithoutExtension(path);
+
+                        var tempFileName = fileName;
+
+                        //check each symbol
+                        foreach (var symbol in fileName)
+                        {
+                            var currentSymbol = symbol.ToString();
+                            var check = dict.ContainsKey(currentSymbol);
+
+                            //if cyrillic exist - dictionary keys are cyrillics
+                            if (check)
+                            {
+                                //value
+                                var symbolToAdd = dict[currentSymbol];
+                                tempFileName = tempFileName.Replace(currentSymbol, symbolToAdd); // replace(swap) symbols
+
+                                countCurrent++;
+                                counterTotal++;
+
+                                printFoundCyr(fileName, currentSymbol, symbolToAdd);
+                            }
+
+                            //set + 1 file
+                            if (countCurrent == 1 && check == true)
+                            {
+                                countFiles++;
+                            }
+                        }
+
+                        //set file name which should be renamed in the hashset
+                        if (countCurrent != 0)
+                        {
+                            var fileToRename = Path.Combine(Path.GetDirectoryName(path), tempFileName + Path.GetExtension(path));
+                            files.Add(fileToRename);
+                        }
+
+                        countCurrent = 0;
+
+                        ////Rename(path, tempFileName); //rename
+                    }
                 }
+
+                allFiles.Clear();
             }
 
             //Printing
@@ -182,11 +196,13 @@ namespace Cyreto_.Core
                     }
                 }
             }
+
             void Rename(string filePath, string newFileName)
             {
                 var newFilePath = Path.Combine(Path.GetDirectoryName(filePath), newFileName + Path.GetExtension(filePath));
                 File.Move(filePath, newFilePath);
             }
+
             void printFoundCyr(string fileName, string currentSymbol, string symbolToAdd)
             {
                 Console.Write($" +[File: {fileName + extensionToSearch} ] has [");
@@ -199,6 +215,7 @@ namespace Cyreto_.Core
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("]");
             }
+
             void printFinalResults()
             {
                 Console.WriteLine();
@@ -227,6 +244,6 @@ namespace Cyreto_.Core
             {
                 Console.ReadLine();
             }
-        } 
+        }
     }
 }
