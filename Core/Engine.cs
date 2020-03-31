@@ -20,8 +20,34 @@ namespace Cyreto_.Core
             GlobalConstants gc = new GlobalConstants();
             getInput let = new getInput();
 
-            Console.WriteLine($"\nDo you want to FIX cyr symbols? [y/n]");
-            var letRename = let.YesNo();
+
+            Console.Write($"\nDo you want to FIX cyr symbols? [y/n] : ");
+            var letRename = let.YesNo(true);
+
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("\n\nDEFAULT LOCATIONS!-> \\Garments; \\Garments YA; \\Garments PS; \\SPLN;");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("Do you want to use default locations? [y/n] : ");
+            var isDefaultLocations = let.YesNo(false);
+       
+            Console.Write("\nDo you need to add more? [y/n] : ");
+            var isCustomLocation = let.YesNo(false);
+            var customLocation = "";
+
+            if (isCustomLocation)
+            {
+                Console.Write("Add : ");
+                customLocation = Console.ReadLine();
+            }
+
+            if(!isDefaultLocations && !isCustomLocation)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                Console.WriteLine("\n\n\t\t   БЪЛГАРСКАТА АЗБУКА / BULGARIAN ALPHABET\n"
+                    + "\n\t\t\tА а , Б б , В в , Г г , Д д , \n\t\t\tЕ е , Ж ж , З з , И и , Й й , \n\t\t\tК к , Л л , М м , Н н , О о , \n\t\t\tП п , Р р , С с , Т т , У у , \n\t\t\tФ ф , Х х , Ц ц , Ч ч , Ш ш , \n\t\t\tЩ щ , Ъ ъ , Ь ь , Ю ю , Я я\n".Replace(',',' '));
+                Console.ForegroundColor = ConsoleColor.White;
+                Environment.Exit(0);
+            }
 
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.Write("\nex: File extension(s): jpg .psd .obj obj");
@@ -73,32 +99,45 @@ namespace Cyreto_.Core
 
                 if (letRename)
                 {
-                    //WANT TO CHANGE NEXT GETFILES METHODS WITH SOMETHING SMARTER/MULTHITHREADING
-
-                    //get the files
-                    string[] adultsCollections = Directory.GetFiles(gc.adults, $"*{extensionToSearch}", SearchOption.AllDirectories); //adults
-                    string[] youngCollections = Directory.GetFiles(gc.youngAthletes, $"*{extensionToSearch}", SearchOption.AllDirectories); //ya
-                    string[] plusCollections = Directory.GetFiles(gc.plusSize, $"*{extensionToSearch}", SearchOption.AllDirectories); //ps
-                    string[] shoesCollections = Directory.GetFiles(gc.shoes, $"*{extensionToSearch}", SearchOption.AllDirectories); //ps
-
-                    foreach (var path in adultsCollections)
+                    if (isDefaultLocations)
                     {
-                        allFiles.Add(path);
+                        //WANT TO CHANGE NEXT GETFILES METHODS WITH SOMETHING SMARTER/MULTHITHREADING
+
+                        //get the files
+                        string[] adultsCollections = Directory.GetFiles(gc.adults, $"*{extensionToSearch}", SearchOption.AllDirectories); //adults
+                        string[] youngCollections = Directory.GetFiles(gc.youngAthletes, $"*{extensionToSearch}", SearchOption.AllDirectories); //ya
+                        string[] plusCollections = Directory.GetFiles(gc.plusSize, $"*{extensionToSearch}", SearchOption.AllDirectories); //ps
+                        string[] shoesCollections = Directory.GetFiles(gc.shoes, $"*{extensionToSearch}", SearchOption.AllDirectories); //ps
+
+                        foreach (var path in adultsCollections)
+                        {
+                            allFiles.Add(path);
+                        }
+
+                        foreach (var path in youngCollections)
+                        {
+                            allFiles.Add(path);
+                        }
+
+                        foreach (var path in plusCollections)
+                        {
+                            allFiles.Add(path);
+                        }
+
+                        foreach (var path in shoesCollections)
+                        {
+                            allFiles.Add(path);
+                        }
                     }
 
-                    foreach (var path in youngCollections)
+                    if (isCustomLocation)
                     {
-                        allFiles.Add(path);
-                    }
-
-                    foreach (var path in plusCollections)
-                    {
-                        allFiles.Add(path);
-                    }
-
-                    foreach (var path in shoesCollections)
-                    {
-                        allFiles.Add(path);
+                        //get the files
+                        string[] customCollection = Directory.GetFiles(customLocation, $"*{extensionToSearch}", SearchOption.AllDirectories); //adults
+                        foreach (var path in customCollection)
+                        {
+                            allFiles.Add(path);
+                        }
                     }
 
                     //

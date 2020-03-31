@@ -6,31 +6,34 @@ namespace Cyreto_.Input
 {
     public class getInput
     {
-        public bool YesNo()
+        public bool YesNo(bool isExit)
         {
             //validate answer for renaming
             string yesOrNo = Console.ReadLine().ToUpper();
-            var answer = yesOrNo == "Y" ? true : false;
+            bool answer = false;
 
             while (yesOrNo != null)
             {
-                if (answer)
+                if (yesOrNo == "Y")
                 {
+                    answer = true;
                     break;
+                }
+                else if (yesOrNo == "N" && isExit)
+                {
+                    Environment.Exit(0);
                 }
                 else if (yesOrNo == "N")
                 {
-                    //answer = false;
-                    //break;
-                    Environment.Exit(0);
+                    answer = false;
+                    break;
                 }
                 else
                 {
                     Console.WriteLine("*You must say 'Y' or 'N' !");
-
                     yesOrNo = Console.ReadLine().ToUpper();
-                    answer = yesOrNo == "Y" ? true : false;
-                }
+                };
+
             }
 
             return answer;
