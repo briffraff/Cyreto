@@ -6,5 +6,7 @@
        public string youngAthletes = @"M:\MD_N\Garments YA";
        public string plusSize = @"M:\MD_N\Garments PS";
        public string shoes = @"M:\SPLN\Garments";
+       public string author = "riffraff";
+       public string dateOfCreation = "2020";
     }
 }
