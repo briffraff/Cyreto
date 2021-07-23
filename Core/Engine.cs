@@ -9,6 +9,11 @@ namespace Cyreto_.Core
 {
     public class Engine : IEngine
     {
+        enum FolderFile
+        {
+
+        }
+
         public void Run()
         {
             //Initialize CYRILIC REMOVER TOTAL OFFENSE
@@ -25,11 +30,11 @@ namespace Cyreto_.Core
             var letRename = let.YesNo(true);
 
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine("\n\nDEFAULT LOCATIONS!-> \\Garments; \\Garments YA; \\Garments PS; \\SPLN;");
+            Console.WriteLine("\n\nDEFAULT LOCATIONS!-> \\Garments; \\Garments YA; \\Garments PS; \\Garments YAPS \\Garments MA \\SPLN;");
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Do you want to use default locations? [y/n] : ");
             var isDefaultLocations = let.YesNo(false);
-       
+
             Console.Write("\nDo you need to add more? [y/n] : ");
             var isCustomLocation = let.YesNo(false);
             var customLocation = "";
@@ -40,11 +45,11 @@ namespace Cyreto_.Core
                 customLocation = Console.ReadLine();
             }
 
-            if(!isDefaultLocations && !isCustomLocation)
+            if (!isDefaultLocations && !isCustomLocation)
             {
                 Console.ForegroundColor = ConsoleColor.DarkCyan;
                 Console.WriteLine("\n\n\t\t   БЪЛГАРСКАТА АЗБУКА / BULGARIAN ALPHABET\n"
-                    + "\n\t\t\tА а , Б б , В в , Г г , Д д , \n\t\t\tЕ е , Ж ж , З з , И и , Й й , \n\t\t\tК к , Л л , М м , Н н , О о , \n\t\t\tП п , Р р , С с , Т т , У у , \n\t\t\tФ ф , Х х , Ц ц , Ч ч , Ш ш , \n\t\t\tЩ щ , Ъ ъ , Ь ь , Ю ю , Я я\n".Replace(',',' '));
+                    + "\n\t\t\tА а , Б б , В в , Г г , Д д , \n\t\t\tЕ е , Ж ж , З з , И и , Й й , \n\t\t\tК к , Л л , М м , Н н , О о , \n\t\t\tП п , Р р , С с , Т т , У у , \n\t\t\tФ ф , Х х , Ц ц , Ч ч , Ш ш , \n\t\t\tЩ щ , Ъ ъ , Ь ь , Ю ю , Я я\n".Replace(',', ' '));
                 Console.ForegroundColor = ConsoleColor.White;
                 Environment.Exit(0);
             }
@@ -53,7 +58,7 @@ namespace Cyreto_.Core
             Console.Write("\nex: File extension(s): jpg .psd .obj obj");
             Console.ForegroundColor = ConsoleColor.White;
 
-            Console.Write("\nFile extension(s): "); // would be good to think about to work with more than one extension
+            Console.Write("\nFile extension(s): "); // would be good to think about working with more than one extension
             var extensions = let.GetExtension();
 
             var extensionToSearch = "";
@@ -65,6 +70,7 @@ namespace Cyreto_.Core
             foreach (var extension in extensions)
             {
                 loops++;
+                
                 Console.WriteLine($"[ {extension} ] -->");
 
                 //fix user input to proper one; -> ".jpg"
@@ -94,6 +100,7 @@ namespace Cyreto_.Core
                     {"Я", "Q"},
                     {"Ф", "F"},
                     {"ѝ", "X"},
+                    {"ь", "X"},
                     {"Х", "H"},
                 };
 
@@ -107,7 +114,10 @@ namespace Cyreto_.Core
                         string[] adultsCollections = Directory.GetFiles(gc.adults, $"*{extensionToSearch}", SearchOption.AllDirectories); //adults
                         string[] youngCollections = Directory.GetFiles(gc.youngAthletes, $"*{extensionToSearch}", SearchOption.AllDirectories); //ya
                         string[] plusCollections = Directory.GetFiles(gc.plusSize, $"*{extensionToSearch}", SearchOption.AllDirectories); //ps
-                        string[] shoesCollections = Directory.GetFiles(gc.shoes, $"*{extensionToSearch}", SearchOption.AllDirectories); //ps
+                        string[] shoesCollections = Directory.GetFiles(gc.shoes, $"*{extensionToSearch}", SearchOption.AllDirectories); //shoes
+                        string[] yapsCollections = Directory.GetFiles(gc.yaps , $"*{extensionToSearch}", SearchOption.AllDirectories); //yaps
+                        string[] maternityCollections = Directory.GetFiles(gc.matternity , $"*{extensionToSearch}", SearchOption.AllDirectories); //matternity
+
 
                         foreach (var path in adultsCollections)
                         {
@@ -124,6 +134,16 @@ namespace Cyreto_.Core
                             allFiles.Add(path);
                         }
 
+                        foreach (var path in yapsCollections)
+                        {
+                            allFiles.Add(path);
+                        }
+
+                        foreach (var path in maternityCollections)
+                        {
+                            allFiles.Add(path);
+                        }
+
                         foreach (var path in shoesCollections)
                         {
                             allFiles.Add(path);
@@ -132,12 +152,40 @@ namespace Cyreto_.Core
 
                     if (isCustomLocation)
                     {
-                        //get the files
-                        string[] customCollection = Directory.GetFiles(customLocation, $"*{extensionToSearch}", SearchOption.AllDirectories); //adults
-                        foreach (var path in customCollection)
+
+                        var dirInfo = new DirectoryInfo(customLocation);
+                        //var foldersCollection = new List<DirectoryInfo>();
+                        //var filesCollection = new List<FileInfo>();
+
+                        //GET ALL FOLDERS
+                        var directories = dirInfo.EnumerateDirectories();
+
+                        // WENT THROUGH EACH FOLDER
+                        foreach (var dir in directories)
                         {
-                            allFiles.Add(path);
+                            if ((dir.Attributes & FileAttributes.System) == FileAttributes.System)
+                            {
+                                continue;
+                            }
+
+                            //foldersCollection.Add(dir);
+
+                            //GET THE FILES FROM CURRENT FOLDER
+                            var subFoldersFiles = Directory.EnumerateFiles(dir.FullName, $"*{extensionToSearch}", SearchOption.AllDirectories);
+
+                            foreach (var file in subFoldersFiles)
+                            {
+                                FileInfo ofile = new FileInfo(file);
+
+                                if ((ofile.Attributes & FileAttributes.System) == FileAttributes.System)
+                                {
+                                    continue;
+                                }
+
+                                allFiles.Add(ofile.FullName);
+                            }
                         }
+
                     }
 
                     //
@@ -183,7 +231,7 @@ namespace Cyreto_.Core
 
                         countCurrent = 0;
 
-                        ////Rename(path, tempFileName); //rename
+                        Rename(path, tempFileName); //rename
                     }
                 }
 
@@ -196,6 +244,7 @@ namespace Cyreto_.Core
             //Finalize
             finalize();
 
+
             //METHODS
             void initCyreto()
             {
@@ -203,10 +252,12 @@ namespace Cyreto_.Core
                 Console.OutputEncoding = Encoding.UTF8;
                 Console.ForegroundColor = ConsoleColor.White;
 
-                var height = 45;
-                var width = 75;
+                var height = 25;
+                var width = 120;
 
                 CheckAndResetWindowSize();
+
+
 
                 Console.WriteLine("---------------------------------------------");
                 Console.WriteLine("---------***      C-Y-R-E-T-O    ***---------");
@@ -231,7 +282,7 @@ namespace Cyreto_.Core
                     if (Console.WindowHeight != height || Console.WindowWidth != width)
                     {
                         Console.SetWindowSize(width, height);
-                        Console.SetBufferSize(width, height);
+                        //Console.SetBufferSize(width, height);
                     }
                 }
             }
@@ -239,7 +290,12 @@ namespace Cyreto_.Core
             void Rename(string filePath, string newFileName)
             {
                 var newFilePath = Path.Combine(Path.GetDirectoryName(filePath), newFileName + Path.GetExtension(filePath));
-                File.Move(filePath, newFilePath);
+
+                //IF FILE NOT EXIST
+                if (File.Exists(newFilePath) == false)
+                {
+                    File.Move(filePath, newFilePath);
+                }
             }
 
             void printFoundCyr(string fileName, string currentSymbol, string symbolToAdd)
@@ -253,6 +309,7 @@ namespace Cyreto_.Core
                 Console.Write($" {symbolToAdd} ");
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("]");
+                Console.WriteLine();
             }
 
             void printFinalResults()
@@ -284,5 +341,6 @@ namespace Cyreto_.Core
                 Console.ReadLine();
             }
         }
+
     }
 }

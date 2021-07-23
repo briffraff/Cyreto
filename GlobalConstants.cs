@@ -2,10 +2,12 @@
 {
     public class GlobalConstants
     {
-       public string adults = @"M:\MD_N\Garments";
-       public string youngAthletes = @"M:\MD_N\Garments YA";
-       public string plusSize = @"M:\MD_N\Garments PS";
-       public string shoes = @"M:\SPLN\Garments";
+       public string adults = @"N:\Garments";
+       public string youngAthletes = @"N:\Garments YA";
+       public string plusSize = @"N:\Garments PS";
+       public string matternity = @"N:\Garments MA";
+       public string yaps = @"N:\Garments YAPS";
+       public string shoes = @"N:\Footwear";
        public string author = "riffraff";
        public string dateOfCreation = "2020";
     }
