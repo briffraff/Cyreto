@@ -21,9 +21,11 @@ namespace Cyreto_.Core
 
             //variables and initialization
             HashSet<string> files = new HashSet<string>();
+            HashSet<string> filesToDelete = new HashSet<string>();
             HashSet<string> allFiles = new HashSet<string>();
             GlobalConstants gc = new GlobalConstants();
             getInput let = new getInput();
+            var counterOfDeletion = 0;
 
 
             Console.Write($"\nDo you want to FIX cyr symbols? [y/n] : ");
@@ -205,6 +207,13 @@ namespace Cyreto_.Core
                             //if cyrillic exist - dictionary keys are cyrillics
                             if (check)
                             {
+                                //ADD file to list to be deleted
+                                if (path.Contains(".obj") || path.Contains(".jpg") || path.Contains(".zpac") ||
+                                    path.Contains(".Zprj") || path.Contains(".psd") || path.Contains(".png"))
+                                {
+                                    filesToDelete.Add(path);
+                                }
+
                                 //value
                                 var symbolToAdd = dict[currentSymbol];
                                 tempFileName = tempFileName.Replace(currentSymbol, symbolToAdd); // replace(swap) symbols
@@ -237,6 +246,9 @@ namespace Cyreto_.Core
 
                 allFiles.Clear();
             }
+
+            //remove files with cyrilic chars
+            //RemoveFilesWithCyr(filesToDelete);
 
             //Printing
             printFinalResults();
@@ -298,6 +310,18 @@ namespace Cyreto_.Core
                 }
             }
 
+            void RemoveFilesWithCyr(HashSet<string> deleteThoseFiles)
+            {
+                foreach (var file in deleteThoseFiles)
+                {
+                    if (File.Exists(file))
+                    {
+                        File.Delete(file);
+                        counterOfDeletion++;
+                    }
+                }
+            }
+
             void printFoundCyr(string fileName, string currentSymbol, string symbolToAdd)
             {
                 Console.Write($" +[File: {fileName + extensionToSearch} ] has [");
@@ -317,7 +341,7 @@ namespace Cyreto_.Core
                 Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine($"Total cyrillic found: {counterTotal}");
-                Console.WriteLine($"Total renamed files: {countFiles}");
+                Console.WriteLine($"Total renamed files: {countFiles} / {counterOfDeletion}");
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine();
 
